@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 export class ClienteController{
     public async criarCliente(req: Request, res: Response){
-        const {nome, email, senha} = req.body;
+        const {nome, email, senha, endereco} = req.body;
 
         try {
             const isEmail = await prisma.clientes.findUnique({
@@ -22,7 +22,8 @@ export class ClienteController{
                 data: {
                     nome,
                     email,
-                    senha: senhaCriptografada
+                    senha: senhaCriptografada,
+                    endereco
                 }
             });
 
@@ -37,7 +38,7 @@ export class ClienteController{
     }
     public async atualizarCliente(req: Request, res: Response){
         const { id } = req.params;
-        const {nome, email, senha} = req.body;
+        const {nome, email, senha, endereco} = req.body;
 
         try {
             const isEmail = await prisma.clientes.findUnique({
@@ -55,7 +56,8 @@ export class ClienteController{
                 data:{
                     nome,
                     email,
-                    senha
+                    senha,
+                    endereco
                 }
             });
 
@@ -76,6 +78,7 @@ export class ClienteController{
                 id: true,
                 nome: true,
                 email: true,
+                endereco: true,
                 Pedidos: true
             }
         });

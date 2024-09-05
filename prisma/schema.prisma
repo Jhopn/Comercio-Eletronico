@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PedidoStatus {
+  PENDENTE
+  COMPLETO
+  ENTREGA
+}
+
 model Produtos{
   id String @id @default(uuid())
   nome String @unique
@@ -20,9 +26,9 @@ model Produtos{
   quantidade Int
   preco Decimal
   imagem String
+  pedidoProdutos pedidosProdutos[]
   criadoEm DateTime @default(now())
   atualizadoEm DateTime @updatedAt
-  Pedidos Pedidos[]
 }
 
 model Clientes{
@@ -30,17 +36,25 @@ model Clientes{
   nome  String
   email     String     @unique
   senha  String
+  endereco String 
   Pedidos Pedidos[]
   criadoEm DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 }
 
-model Pedidos{
+model pedidosProdutos{
   id String @id @default(uuid())
   quantidade Int
+  Pedidos      Pedidos?     @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  pedidoId String?
   Produtos      Produtos?     @relation(fields: [produtoId], references: [id], onDelete: Cascade)
   produtoId    String?   
+}
+
+model Pedidos{
+  id String @id @default(uuid())
+  status PedidoStatus @default(PENDENTE)
+  pedidoProdutos pedidosProdutos[]
   Clientes      Clientes?     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   clienteId    String?   
-  criadoEm DateTime @default(now())
 }
